@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "A Node.js CLI Weather Fetcher",
   "type": "module",
-  "main": "src/cli.js",
+  "main": "src/utils/cli.js",
   "bin": {
-    "ikirere": "./src/cli.js"
+    "ikirere": "./src/utils/cli.js"
   },
   "scripts": {
-    "start": "node src/cli.js"
+    "start": "node src/utils/cli.js"
   },
   "keywords": [
     "weather",
