@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import { parseArgs } from "node:util";
+import { showWeather } from "../commands/weather.js";
 
-const { values, positionals } = parseArgs({
+const { values } = parseArgs({
   options: {
     city: {
       type: "string",
@@ -32,10 +33,17 @@ Options:
   process.exit(0);
 }
 
-if (!values.city) {
+if (!values.city || !values.city.trim()) {
   console.log("Please provide a city name.");
   console.log("Example: ikirere --city Kigali");
   process.exit(1);
 }
 
-console.log(`Getting weather information for ${values.city}...`);
+try {
+  console.log(`Getting weather information for ${values.city}...`);
+
+  await showWeather(values.city);
+} catch (error) {
+  console.error(`Error: ${error.message}`);
+  process.exitCode = 1;
+}
