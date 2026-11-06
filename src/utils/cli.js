@@ -3,19 +3,29 @@
 import { parseArgs } from "node:util";
 import { showWeather } from "../commands/weather.js";
 
-const { values } = parseArgs({
-  options: {
-    city: {
-      type: "string",
-      short: "c",
+let values;
+
+try {
+  const args = parseArgs({
+    options: {
+      city: {
+        type: "string",
+        short: "c",
+      },
+      help: {
+        type: "boolean",
+        short: "h",
+      },
     },
-    help: {
-      type: "boolean",
-      short: "h",
-    },
-  },
-  allowPositionals: true,
-});
+    allowPositionals: true,
+  });
+
+  values = args.values;
+} catch (error) {
+  console.error(`Error: ${error.message}`);
+  console.error("Run 'ikirere --help' to see available options.");
+  process.exit(1);
+}
 
 if (values.help) {
   console.log(`
@@ -33,12 +43,14 @@ Options:
   process.exit(0);
 }
 
+// 5. Check whether the user entered a city.
 if (!values.city || !values.city.trim()) {
-  console.log("Please provide a city name.");
-  console.log("Example: ikirere --city Kigali");
+  console.error("Please provide a city name.");
+  console.error("Example: ikirere --city Kigali");
   process.exit(1);
 }
 
+// 6. Retrieve and display weather information.
 try {
   console.log(`Getting weather information for ${values.city}...`);
 
