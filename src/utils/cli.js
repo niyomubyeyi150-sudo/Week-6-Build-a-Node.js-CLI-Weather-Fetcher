@@ -43,14 +43,12 @@ Options:
   process.exit(0);
 }
 
-// 5. Check whether the user entered a city.
 if (!values.city || !values.city.trim()) {
   console.error("Please provide a city name.");
   console.error("Example: ikirere --city Kigali");
   process.exit(1);
 }
 
-// 6. Retrieve and display weather information.
 try {
   console.log(`Getting weather information for ${values.city}...`);
 
