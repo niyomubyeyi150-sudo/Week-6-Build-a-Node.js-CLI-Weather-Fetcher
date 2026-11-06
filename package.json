@@ -1,0 +1,20 @@
+{
+  "name": "ikirere",
+  "version": "1.0.0",
+  "description": "A Node.js CLI Weather Fetcher",
+  "type": "module",
+  "main": "src/cli.js",
+  "bin": {
+    "ikirere": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js"
+  },
+  "keywords": [
+    "weather",
+    "cli",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "ISC"
+}
