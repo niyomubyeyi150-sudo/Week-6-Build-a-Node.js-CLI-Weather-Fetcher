@@ -2,7 +2,9 @@
 
 import { parseArgs } from "node:util";
 import { showWeather } from "../commands/weather.js";
+import os from "node:os";
 
+const systemPlatform = os.platform();
 let values;
 
 try {
@@ -31,6 +33,7 @@ if (values.help) {
   console.log(`
 Welcome to Ikirere Weather CLI!
 
+ Platform: ${systemPlatform}
 Usage:
   ikirere --city <city>
   ikirere -c <city>
