@@ -1,4 +1,4 @@
 {
-  "temperatureUnit": "celsius",
-  "defaultCity": "Kigali"
+  "temperatureUnit": "fahrenheit",
+  "defaultCity": "Musanze"
 }
