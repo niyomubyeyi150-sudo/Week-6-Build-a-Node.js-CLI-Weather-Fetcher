@@ -8,7 +8,7 @@
     "ikirere": "./src/utils/cli.js"
   },
   "scripts": {
-    "start": "node src/utils/cli.js"
+    "start": "node init && node src/utils/cli.js"
   },
   "keywords": [
     "weather",
