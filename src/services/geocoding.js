@@ -12,7 +12,7 @@ export async function getCoordinates(city) {
 
   try {
     response = await fetch(url, {
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(Number(process.env.WEATHER_TIMEOUT) || 10000),
     });
   } catch (error) {
     if (error.name === "TimeoutError") {
