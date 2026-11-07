@@ -1,4 +1,8 @@
 {
-  "temperatureUnit": "fahrenheit",
-  "defaultCity": "Musanze"
+  "defaultCity": "Musanze",
+  "temperatureUnit": "celsius",
+  "windSpeedUnit": "kmh",
+  "timeFormat": "24-hour",
+  "language": "English",
+  "weatherDetails": "detailed"
 }

@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-
 import { parseArgs } from "node:util";
 import os from "node:os";
-import { showWeather, listHistory } from "../commands/weather.js";
+import {showWeather,listHistory,} from "../commands/weather.js";
 import {addFavorite,listFavorites,} from "../commands/favorites.js";
-import {showSettings,updateDefaultCity,updateTemperatureUnit,} from "../commands/settings.js";
+import {getSettings,showSettings,updateDefaultCity,updateTemperatureUnit,} from "../commands/settings.js";
 
 async function main() {
   let values;
@@ -47,6 +46,7 @@ async function main() {
     });
 
     values = args.values;
+
   } catch (error) {
     console.error(`Error: ${error.message}`);
     console.error("Run 'ikirere --help' to see available options.");
@@ -54,7 +54,6 @@ async function main() {
     return;
   }
 
-  // 6. Display help information.
   if (values.help) {
     console.log(`
 Welcome to Ikirere Weather CLI!
@@ -86,7 +85,6 @@ Options:
     return;
   }
 
-  // 7. Add a city to favourites.
   if (values["favorite-add"] !== undefined) {
     try {
       await addFavorite(values["favorite-add"]);
@@ -98,7 +96,6 @@ Options:
     return;
   }
 
-  // 8. Display favourite cities.
   if (values.favorites) {
     try {
       await listFavorites();
@@ -110,7 +107,6 @@ Options:
     return;
   }
 
-  // 9. Display weather search history.
   if (values.history) {
     try {
       await listHistory();
@@ -122,7 +118,6 @@ Options:
     return;
   }
 
-  // 10. Display saved settings.
   if (values.settings) {
     try {
       await showSettings();
@@ -134,7 +129,6 @@ Options:
     return;
   }
 
-  // 11. Update the default city.
   if (values["set-city"] !== undefined) {
     try {
       await updateDefaultCity(values["set-city"]);
@@ -146,7 +140,6 @@ Options:
     return;
   }
 
-  // 12. Update the temperature unit.
   if (values.unit !== undefined) {
     try {
       await updateTemperatureUnit(values.unit);
@@ -158,24 +151,19 @@ Options:
     return;
   }
 
-  // 13. Check whether a weather city was provided.
-  if (!values.city || !values.city.trim()) {
-    console.error("Please provide a city name.");
-    console.error("Example: ikirere --city Kigali");
-    process.exitCode = 1;
-    return;
-  }
-
-  // 14. Retrieve and display weather information.
   try {
-    console.log(`Getting weather information for ${values.city}...`);
+    const settings = await getSettings();
 
-    await showWeather(values.city);
+    const city = values.city?.trim() || settings.defaultCity;
+
+    console.log(`Getting weather information for ${city}...`);
+
+    await showWeather(city);
+
   } catch (error) {
     console.error(`Error: ${error.message}`);
     process.exitCode = 1;
   }
 }
 
-// 15. Run the CLI application.
 await main();

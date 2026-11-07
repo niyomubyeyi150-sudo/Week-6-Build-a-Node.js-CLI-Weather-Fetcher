@@ -1,6 +1,22 @@
 import { readJSON, writeJSON } from "../storage/storage.js";
+import { loadEnvFile } from "node:process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const DEFAULT_SETTINGS = {temperatureUnit: "celsius",defaultCity: "Kigali",};
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const envPath = path.resolve(__dirname, "../../.env");
+
+loadEnvFile(envPath);
+
+export const DEFAULT_SETTINGS = {
+  defaultCity: process.env.DEFAULT_CITY || "Kigali",
+  temperatureUnit: process.env.TEMPERATURE_UNIT || "celsius",
+  windSpeedUnit: process.env.WIND_SPEED_UNIT || "kmh",
+  timeFormat: "24-hour",
+  language: "English",
+  weatherDetails: "detailed",
+};
 
 export async function getSettings() {
   const savedSettings = await readJSON("settings.json", {});
@@ -10,12 +26,7 @@ export async function getSettings() {
     ...savedSettings,
   };
 
-  if (
-    !savedSettings.temperatureUnit ||
-    !savedSettings.defaultCity
-  ) {
-    await writeJSON("settings.json", settings);
-  }
+  await writeJSON("settings.json", settings);
 
   return settings;
 }
@@ -23,11 +34,23 @@ export async function getSettings() {
 export async function showSettings() {
   const settings = await getSettings();
 
-  console.log("\nIkirere Settings:");
+  console.log("\nIkirere Settings");
   console.log("------------------------------");
-  console.log(`Temperature unit: ${settings.temperatureUnit}`);
   console.log(`Default city: ${settings.defaultCity}`);
+  console.log(`Temperature unit: ${settings.temperatureUnit}`);
+  console.log(`Wind speed unit: ${settings.windSpeedUnit}`);
+  console.log(`Time format: ${settings.timeFormat}`);
+  console.log(`Language: ${settings.language}`);
+  console.log(`Weather details: ${settings.weatherDetails}`);
   console.log("------------------------------");
+}
+
+async function saveSetting(property, value) {
+  const settings = await getSettings();
+
+  settings[property] = value;
+
+  await writeJSON("settings.json", settings);
 }
 
 export async function updateDefaultCity(city) {
@@ -35,33 +58,72 @@ export async function updateDefaultCity(city) {
     throw new Error("Please provide a valid city name.");
   }
 
-  const settings = await getSettings();
+  await saveSetting("defaultCity", city.trim());
 
-  settings.defaultCity = city.trim();
-
-  await writeJSON("settings.json", settings);
-
-  console.log(`Default city updated to ${settings.defaultCity}.`);
+  console.log(`Default city updated to ${city.trim()}.`);
 }
 
 export async function updateTemperatureUnit(unit) {
-  if (typeof unit !== "string") {
-    throw new Error("Please enter celsius or fahrenheit.");
+  const value = unit.toLowerCase();
+
+  if (!["celsius", "fahrenheit"].includes(value)) {
+    throw new Error("Use celsius or fahrenheit.");
   }
 
-  const cleanUnit = unit.trim().toLowerCase();
+  await saveSetting("temperatureUnit", value);
 
-  const validUnits = ["celsius", "fahrenheit"];
+  console.log(`Temperature unit updated to ${value}.`);
+}
 
-  if (!validUnits.includes(cleanUnit)) {
-    throw new Error("Temperature unit must be celsius or fahrenheit.");
+export async function updateWindSpeedUnit(unit) {
+  const value = unit.toLowerCase();
+
+  if (!["kmh", "mph"].includes(value)) {
+    throw new Error("Use kmh or mph.");
   }
 
-  const settings = await getSettings();
+  await saveSetting("windSpeedUnit", value);
 
-  settings.temperatureUnit = cleanUnit;
+  console.log(`Wind speed unit updated to ${value}.`);
+}
 
-  await writeJSON("settings.json", settings);
+export async function updateTimeFormat(format) {
+  const value = format.toLowerCase();
 
-  console.log(`Temperature unit updated to ${settings.temperatureUnit}.`);
+  if (!["12-hour", "24-hour"].includes(value)) {
+    throw new Error("Use 12-hour or 24-hour.");
+  }
+
+  await saveSetting("timeFormat", value);
+
+  console.log(`Time format updated to ${value}.`);
+}
+
+export async function updateLanguage(language) {
+  const value = language.toLowerCase();
+
+  const languages = {
+    english: "English",
+    kinyarwanda: "Kinyarwanda",
+  };
+
+  if (!languages[value]) {
+    throw new Error("Use English or Kinyarwanda.");
+  }
+
+  await saveSetting("language", languages[value]);
+
+  console.log(`Language updated to ${languages[value]}.`);
+}
+
+export async function updateWeatherDetails(level) {
+  const value = level.toLowerCase();
+
+  if (!["basic", "detailed"].includes(value)) {
+    throw new Error("Use basic or detailed.");
+  }
+
+  await saveSetting("weatherDetails", value);
+
+  console.log(`Weather details updated to ${value}.`);
 }
