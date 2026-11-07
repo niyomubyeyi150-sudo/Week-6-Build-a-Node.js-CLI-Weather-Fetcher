@@ -42,5 +42,9 @@ export async function getWeather(latitude, longitude) {
     throw new Error("Current weather information is unavailable.");
   }
 
-  return data.current;
+ return {
+   ...data.current,
+   timezone: data.timezone,
+   timezoneAbbreviation: data.timezone_abbreviation,
+ };
 }
