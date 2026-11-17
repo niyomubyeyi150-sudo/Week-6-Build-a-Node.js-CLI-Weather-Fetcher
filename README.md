@@ -1,48 +1,100 @@
 
 # Ikirere 🌦️
-### A Node.js CLI Weather Fetcher
 
-Ikirere is a command-line weather application built with Node.js. It allows users to retrieve current weather information for different cities directly from their terminal.
-The application uses the Open-Meteo Geocoding API to find a city's geographical coordinates and the Open-Meteo Weather API to retrieve its current weather information.
-This project was developed as part of the **Week 6 Personal Workshop – Build a Node.js CLI Weather Fetcher** to practise asynchronous JavaScript, API integration, error handling, Node.js built-in modules, JSON persistence and environment variables.
+### A Node.js Interactive Weather CLI
+
+Ikirere is a command-line weather application built with Node.js that allows users to retrieve current weather information for cities around the world directly from their terminal.
+
+The application uses the **Open-Meteo Geocoding API** to find a city's geographical coordinates and the **Open-Meteo Weather API** to retrieve its current weather information.
+
+Ikirere provides two ways to interact with the application:
+
+- **Interactive Mode:** Navigate through a menu to check weather, manage favourite cities, view search history, and update application settings.
+- **Command Mode:** Use terminal options to perform specific actions directly without opening the interactive menu.
+
+The project was developed as part of the **Week 6 Personal Workshop – Build a Node.js CLI Weather Fetcher** to practise asynchronous JavaScript, API integration, error handling, Node.js built-in modules, JSON persistence, and environment variables.
+
+---
 
 ## Project Objectives
 
 - Build an installable command-line application using Node.js.
 - Retrieve weather information through HTTP requests.
 - Connect a geocoding API to a weather API.
-- Handle invalid input, network errors, timeouts and unavailable cities.
+- Handle invalid input, network errors, timeouts, and unavailable cities.
 - Save favourite cities and weather search history.
 - Store and manage application settings using JSON.
 - Use environment variables for application configuration.
-- Practise Node.js built-in modules.
+- Practise asynchronous JavaScript and Node.js built-in modules.
+- Build an interactive command-line experience.
 
 ## Features
 
-- **Weather Search:** Retrieve current weather information by city name.
-- **Geocoding:** Convert city names into geographical coordinates.
-- **Weather Information:** Display temperature, feels-like temperature, humidity, wind speed and precipitation.
-- **Local Time:** Display the local time and timezone of the searched city.
-- **Default City:** Automatically use the saved default city when no city is provided.
-- **Favourite Cities:** Add and display favourite cities.
-- **Weather History:** Save and view previous weather searches.
-- **Application Settings:** Configure the default city and temperature unit.
-- **JSON Persistence:** Keep favourites, history and settings saved between application runs.
-- **Environment Variables:** Load application configuration from a `.env` file.
-- **Error Handling:** Display friendly messages for invalid cities, network problems and request timeouts.
-- **Command-Line Interface:** Run the application using terminal commands.
+### Weather Information
+
+- Search for current weather information using a city name.
+- Convert city names into geographical coordinates through geocoding.
+- Display temperature, feels-like temperature, humidity, wind speed, and precipitation.
+- Display the local time and timezone of the searched city.
+
+### Interactive Menu
+
+- Navigate through application features using arrow keys.
+- Check weather for different cities.
+- Add and view favourite cities.
+- View previous weather searches.
+- Change the default city.
+- Update temperature and wind speed preferences.
+- Change time format, language, and weather details preferences.
+- Exit the application through the menu.
+
+### Favourite Cities
+
+- Add cities to favourites.
+- Display saved favourite cities.
+- Prevent duplicate favourite entries.
+
+### Weather History
+
+- Automatically save weather searches.
+- Display previously searched cities.
+- Keep search history between application runs.
+
+### Application Settings
+
+- Configure the default city.
+- Select a temperature unit preference.
+- Select a wind speed unit preference.
+- Choose a 12-hour or 24-hour time format.
+- Choose English or Kinyarwanda.
+- Select basic or detailed weather information.
+
+### Additional Features
+
+- JSON persistence for favourites, history, and settings.
+- Environment-variable configuration.
+- Friendly error messages for common problems.
+- Traditional command-line options for direct execution.
+
+---
 
 ## Technologies
 
-- **Node.js** – JavaScript runtime.
-- **JavaScript (ES Modules)** – Application logic and modular code.
-- **Fetch API** – Making HTTP requests.
-- **Open-Meteo Geocoding API** – Retrieving geographical coordinates.
-- **Open-Meteo Weather API** – Retrieving current weather information.
-- **JSON** – Storing favourites, weather history and settings.
-- **Node.js Built-in Modules** – `process`, `util`, `fs/promises`, `path`, `os` and `url`.
-- **Environment Variables** – Managing application configuration.
-- **Git and GitHub** – Version control and project collaboration.
+| Technology | Purpose |
+|---|---|
+| Node.js | JavaScript runtime |
+| JavaScript (ES Modules) | Application logic and modular code |
+| Node.js Fetch API | Making HTTP requests |
+| Open-Meteo Geocoding API | Finding geographical coordinates |
+| Open-Meteo Weather API | Retrieving weather information |
+| `@inquirer/prompts` | Interactive terminal menus |
+| `ora` | Terminal loading indicators, where used |
+| JSON | Persistent data storage |
+| `node:util` | Parsing command-line arguments |
+| `node:fs/promises` | Reading and writing files |
+| `node:path` | Managing file paths |
+| `node:os` | Accessing operating system information |
+| Git and GitHub | Version control and collaboration |
 
 ## Project Structure
 
@@ -59,7 +111,8 @@ ikirere/
 │   ├── storage/
 │   │   └── storage.js
 │   └── utils/
-│       └── cli.js
+│       ├── cli.js
+│       └── menu.js
 ├── data/
 │   ├── favorites.json
 │   ├── history.json
@@ -71,6 +124,10 @@ ikirere/
 ├── package-lock.json
 └── README.md
 ```
+
+**Note:** The `menu.js` file contains the interactive menu, while `cli.js` handles command-line arguments and decides whether to launch the menu or execute a direct command.
+
+---
 
 ## Installation
 
@@ -100,8 +157,6 @@ cd Week-6-Build-a-Node.js-CLI-Weather-Fetcher
 npm install
 ```
 
-Ikirere uses Node.js built-in Fetch and core modules, so it does not require an external HTTP library.
-
 ### 4. Configure environment variables
 
 Create a `.env` file in the project root and add:
@@ -115,53 +170,94 @@ WEATHER_TIMEOUT=10000
 
 The `.env.example` file provides a configuration template.
 
-**Note:** The application uses saved settings in `data/settings.json` in preference to environment-variable defaults. Keep `.env` private and do not commit it to GitHub.
+**Important:** Keep your `.env` file private and do not commit it to GitHub. The `.gitignore` file should exclude it.
 
-### 5. Install the CLI globally
+Saved settings in `data/settings.json` are combined with the environment-variable defaults.
 
-Run:
-
-```bash
-npm link
-```
-
-This makes the `ikirere` command available in your terminal.
-
-You can also run the application locally without a global installation:
+### 5. Run Ikirere locally
 
 ```bash
 npm start
 ```
 
-## Usage
+### 6. Install the CLI globally
 
-### Display help information
-
-```bash
-ikirere --help
-```
-
-### Search weather by city
+To make the `ikirere` command available in your terminal, run:
 
 ```bash
-ikirere --city Kigali
+npm link
 ```
 
-You can also use the short option:
-
-```bash
-ikirere -c Kigali
-```
-
-### Use the saved default city
+After linking, you can launch Ikirere from the terminal using:
 
 ```bash
 ikirere
 ```
 
-If no city is provided, Ikirere uses the saved default city.
+---
 
-### Manage favourite cities
+## Usage
+
+Ikirere supports interactive and command-line modes.
+
+### 1. Interactive Mode
+
+Start the application without additional arguments:
+
+```bash
+npm start
+```
+
+Or, after installing the CLI globally:
+
+```bash
+ikirere
+```
+
+The application displays an interactive menu with options such as:
+
+1. Check weather
+2. Add a favourite city
+3. View favourite cities
+4. View weather history
+5. Change default city
+6. Change temperature unit
+7. Change wind speed unit
+8. Change time format
+9. Change language
+10. Change weather details
+11. View settings
+12. Exit
+
+Use the arrow keys to navigate and press Enter to select an option.
+
+### 2. Command Mode
+
+You can also execute individual actions directly from the terminal.
+
+#### Display help information
+
+```bash
+ikirere --help
+```
+
+#### Search weather by city
+
+```bash
+ikirere --city Kigali
+```
+
+Short option:
+
+```bash
+ikirere -c Kigali
+```
+
+#### Use the saved default city
+
+When no city is specified, the application uses the saved default city and opens the interactive menu. Select **Check weather** to retrieve its weather information.
+
+#### Manage favourite cities
 
 Add a city:
 
@@ -175,13 +271,13 @@ Display favourite cities:
 ikirere --favorites
 ```
 
-### View weather search history
+#### View weather search history
 
 ```bash
 ikirere --history
 ```
 
-### Manage application settings
+#### Manage application settings
 
 Display saved settings:
 
@@ -206,97 +302,132 @@ Supported temperature unit values:
 - `celsius`
 - `fahrenheit`
 
-## Walkthrough: How Ikirere Works
+---
 
-Ikirere follows a sequence of steps to retrieve and display weather information.
+## How Ikirere Works
 
-### Step 1: User enters a command
+Ikirere uses a modular structure that separates command handling, API requests, and data storage.
 
-The user enters a city name in the terminal:
+### Step 1: Application Entry Point
 
-```bash
-ikirere --city Kigali
-```
+When the user starts Ikirere, the application executes `cli.js`.
 
-### Step 2: Command-line argument parsing
+It checks whether the user provided command-line arguments.
 
-The application uses Node.js `util.parseArgs()` to read and interpret the user's command-line options.
+- Without additional arguments, it launches the interactive menu.
+- With additional arguments, it uses Node.js `util.parseArgs()` to interpret the requested options.
 
-It checks whether the user requested weather information, favourites, history, settings or help.
+### Step 2: User Selects an Action
 
-### Step 3: Geocoding request
+In interactive mode, `menu.js` displays available actions using `@inquirer/prompts`.
+
+The selected action determines which existing application function should execute.
+
+For example, choosing **Check weather** calls the `showWeather()` function.
+
+### Step 3: Geocoding Request
 
 The geocoding service sends a request to the Open-Meteo Geocoding API.
 
-The API searches for the requested city and returns information such as:
+It searches for the requested city and retrieves information such as:
 
 - City name
 - Country
 - Latitude
 - Longitude
 
-### Step 4: Weather request
+### Step 4: Weather Request
 
-The weather service uses the returned latitude and longitude to make a second HTTP request to the Open-Meteo Weather API.
+The weather service uses the returned latitude and longitude to make a second request to the Open-Meteo Weather API.
 
 It retrieves current weather information for the requested location.
 
-### Step 5: Display weather information
+### Step 5: Display Weather Information
 
-The application displays the retrieved information in the terminal, including temperature, feels-like temperature, humidity, wind speed, precipitation and local time.
+The application displays the retrieved weather information in the terminal, including:
 
-### Step 6: Save weather history
+- Temperature
+- Feels-like temperature
+- Humidity
+- Wind speed
+- Precipitation
+- Local time
+- Timezone
 
-The application reads the existing history from `data/history.json`, adds the latest search and saves the updated information.
+### Step 6: Save Weather History
 
-### Step 7: Persistent storage
+After retrieving weather information, the application reads the existing records from `history.json`.
 
-Favourite cities, weather history and application settings are stored in JSON files.
+It adds the latest search and writes the updated history back to the JSON file.
 
-This allows saved information to remain available even after the application is closed and restarted.
+### Step 7: Manage Persistent Data
 
-### Application Flow
+Ikirere uses JSON files to store favourites, search history, and application settings.
+
+This allows information to remain available even after the application is closed and restarted.
+
+---
+
+## Application Flow
 
 ```text
-User Command
-     |
-     v
-CLI Argument Parsing
-     |
-     v
-Validate Input / Read Settings
-     |
-     v
-Geocoding API
-     |
-     v
-Get Latitude and Longitude
-     |
-     v
-Weather API
-     |
-     v
-Retrieve Current Weather
-     |
-     v
-Display Weather Information
-     |
-     v
-Save Search to JSON History
+                 User
+                  |
+                  v
+             Ikirere CLI
+                  |
+                  v
+          Check User Arguments
+                  |
+          +-------+-------+
+          |               |
+          v               v
+    No Arguments     Has Arguments
+          |               |
+          v               v
+    Interactive       Parse Options
+       Menu                |
+          |                v
+          |          Execute Command
+          |                |
+          +-------+--------+
+                  |
+                  v
+          Selected Action
+                  |
+          +-------+--------+
+          |                |
+          v                v
+      Weather         Other Actions
+          |          (Favourites,
+          v           History,
+      Geocoding        Settings)
+          |
+          v
+      Weather API
+          |
+          v
+    Display Results
+          |
+          v
+     Save History
+          |
+          v
+       JSON Files
 ```
 
 ## Environment Variables
 
-Ikirere uses environment variables to manage application configuration.
+Ikirere uses environment variables to manage default application configuration.
 
 | Variable | Description | Example |
 |---|---|---|
 | `DEFAULT_CITY` | Default city | Kigali |
-| `TEMPERATURE_UNIT` | Temperature preference | celsius |
-| `WIND_SPEED_UNIT` | Wind speed preference | kmh |
+| `TEMPERATURE_UNIT` | Default temperature preference | celsius |
+| `WIND_SPEED_UNIT` | Default wind speed preference | kmh |
 | `WEATHER_TIMEOUT` | API request timeout in milliseconds | 10000 |
 
-The application loads these variables from `.env` using Node.js built-in environment-variable support.
+The application loads configuration from `.env`.
 
 The `.env` file is excluded from Git using `.gitignore`, while `.env.example` is included as a configuration template.
 
@@ -306,15 +437,15 @@ Ikirere uses JSON files to store application data.
 
 | File | Purpose |
 |---|---|
-| `favorites.json` | Stores favourite cities. |
-| `history.json` | Stores previous weather searches. |
-| `settings.json` | Stores application preferences. |
+| `favorites.json` | Stores favourite cities |
+| `history.json` | Stores previous weather searches |
+| `settings.json` | Stores application preferences |
 
 The application uses Node.js `fs/promises` and `path` to read and write JSON data.
 
 ## Error Handling
 
-Ikirere provides friendly error messages for common problems, including:
+Ikirere provides error handling for common problems, including:
 
 - Missing or empty city names.
 - Invalid city names or cities that cannot be found.
@@ -323,26 +454,14 @@ Ikirere provides friendly error messages for common problems, including:
 - Unavailable API services.
 - Unexpected API responses.
 - Invalid command-line options.
+- Invalid application settings.
 
-The application also uses appropriate process exit codes to indicate successful and unsuccessful command execution.
+The application also uses appropriate process exit codes to indicate unsuccessful command execution.
 
-## Learning Outcomes
+---
 
-Through this project, I practised:
-
-- Creating and configuring a Node.js CLI application.
-- Using ES modules to organise JavaScript code.
-- Making asynchronous HTTP requests with `fetch()` and `async/await`.
-- Connecting multiple APIs to retrieve information.
-- Handling errors and request timeouts.
-- Working with Node.js built-in modules.
-- Reading and writing JSON files.
-- Managing environment variables.
-- Building persistent command-line application features.
-- Using Git and GitHub for version control.
-
+## Author
 
 **Nadine Niyomubyeyi**
+
 Week 6 Personal Workshop – Node.js CLI Weather Fetcher.
-
-

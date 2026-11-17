@@ -1,11 +1,31 @@
 #!/usr/bin/env node
+
 import { parseArgs } from "node:util";
 import os from "node:os";
-import {showWeather,listHistory,} from "../commands/weather.js";
-import {addFavorite,listFavorites,} from "../commands/favorites.js";
-import {getSettings,showSettings,updateDefaultCity,updateTemperatureUnit,} from "../commands/settings.js";
+
+import { showWeather, listHistory } from "../commands/weather.js";
+
+import {
+  addFavorite,
+  listFavorites,
+} from "../commands/favorites.js";
+
+import {
+  getSettings,
+  showSettings,
+  updateDefaultCity,
+  updateTemperatureUnit,
+} from "../commands/settings.js";
+
+import { runMenu } from "../utils/menu.js";
 
 async function main() {
+  // Show the interactive menu when no arguments are provided.
+  if (process.argv.length === 2) {
+    await runMenu();
+    return;
+  }
+
   let values;
 
   try {
@@ -46,7 +66,6 @@ async function main() {
     });
 
     values = args.values;
-
   } catch (error) {
     console.error(`Error: ${error.message}`);
     console.error("Run 'ikirere --help' to see available options.");
@@ -159,7 +178,6 @@ Options:
     console.log(`Getting weather information for ${city}...`);
 
     await showWeather(city);
-
   } catch (error) {
     console.error(`Error: ${error.message}`);
     process.exitCode = 1;
